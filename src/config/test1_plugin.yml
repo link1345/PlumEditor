@@ -1,0 +1,4 @@
+
+plugin_folder: "test1_plugin"
+module:
+ - test1
