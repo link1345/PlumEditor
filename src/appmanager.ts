@@ -85,7 +85,7 @@ export class AppManager {
 				//console.log( "Event:" ,  eventName , ", Name:" , obj_key);
 				if( item["object"][obj_key]["obj"][eventName] == null ) continue;
 				try {
-					console.log("data:" , ...data);
+					//console.log("data:" , ...data);
 					//console.log("start!  obj_key " , obj_key , "   eventName " , eventName, "   : " , item["object"][obj_key]["obj"][eventName] );
 					( await item["object"][obj_key]["obj"][eventName](client, item["config"], ...data) );				
 					//console.log("end!  obj_key " , obj_key , "   eventName " , eventName);

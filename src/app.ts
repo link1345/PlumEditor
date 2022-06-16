@@ -22,7 +22,7 @@ export class EditorClient{
     eventRun = async<T extends readonly any[]>( eventName:string, data:[...T] ) => {
         for( let element of this.EventList ){
             if(eventName == element.eventName){
-                console.log(element.func);
+                //console.log(element.func);
                 await element.func(...data);
             }
         }
@@ -43,7 +43,7 @@ export class EditorClient{
     }
 
     on(eventName:string, event_func:Function){
-        console.log(eventName, event_func);
+        //console.log(eventName, event_func);
         this.EventList.push( new EventData(eventName, event_func) );
     }
 
