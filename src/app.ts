@@ -1,6 +1,7 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow , Menu} from 'electron';
 import * as path  from 'path';
 
+import * as lang from './language';
 
 export class EventData{
     eventName: string;
@@ -14,6 +15,10 @@ export class EventData{
 
 export class EditorClient{
     EventList: Array<EventData>;
+
+    testclicked(){
+        console.log("hello test message");
+    }
 
     constructor(){
         this.EventList = new Array<EventData>();
@@ -29,6 +34,20 @@ export class EditorClient{
 	}
 
     async createWindow () {
+        // メニュー登録
+        let template : Menu = Menu.buildFromTemplate([
+            {
+                label: lang.languageMethod.getLang(app, "file"),
+                submenu: [
+                    {click:this.testclicked, label:"上書き保存"},
+                    {click:this.testclicked, label:"名前付けて保存"},
+                    {role:"close", label:"閉じる"},
+                ]
+            }
+        ]);
+        Menu.setApplicationMenu(template);
+
+        // ブラウザ表示
         const win = new BrowserWindow({
             width: 800,
             height: 600,
@@ -56,6 +75,8 @@ export class EditorClient{
                 this.createWindow()
                 }
             })
+
+            console.log("Locale : " + app.getLocale());
         })
 
         app.on('window-all-closed', () => {
