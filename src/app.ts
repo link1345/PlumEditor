@@ -13,6 +13,7 @@ export class EventData{
     }
 }
 
+
 export class EditorClient{
     EventList: Array<EventData>;
 
@@ -31,7 +32,7 @@ export class EditorClient{
                 await element.func(...data);
             }
         }
-	}
+    }
 
     async createWindow () {
         // メニュー登録
@@ -55,10 +56,12 @@ export class EditorClient{
             preload: path.join(__dirname, 'preload.js')
             }
         })
-
         //console.log("test message");
         this.eventRun("PluginLoaded",["testMessage"]);
+        
+        win.webContents.openDevTools()
         win.loadFile('index.html');
+
     }
 
     on(eventName:string, event_func:Function){
