@@ -72,15 +72,16 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DisableSpecificWarnings>26451;26812;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>C:\imgui-master\imgui-1.89.5\backends;C:\imgui-master\imgui-1.89.5;C:\imgui-master</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\link\source\repos\PlumEditor\PlumEditor;C:\imgui-master\imgui-1.89.5\backends;C:\imgui-master\imgui-1.89.5;C:\imgui-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BuildStlModules>false</BuildStlModules>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <DelayLoadDLLs>advapi32.dll;crypt32.dll;dwmapi.dll;gdi32.dll;imm32.dll;ole32.dll;oleaut32.dll;opengl32.dll;shell32.dll;shlwapi.dll;user32.dll;winmm.dll;ws2_32.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
-      <AdditionalLibraryDirectories>C:\imgui-master\imgui-1.89.5\backends;C:\imgui-master\imgui-1.89.5;C:\imgui-master</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\link\source\repos\PlumEditor\PlumEditor;C:\imgui-master\imgui-1.89.5\backends;C:\imgui-master\imgui-1.89.5;C:\imgui-master;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /I /D /Y "$(OutDir)$(TargetFileName)" "$(ProjectDir)App"
@@ -101,9 +102,10 @@ xcopy "$(ProjectDir)\hello.as" "$(ProjectDir)App" /Y</Command>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DisableSpecificWarnings>26451;26812;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>C:\imgui-master\imgui-1.89.5\backends;C:\imgui-master\imgui-1.89.5;C:\imgui-master</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\link\source\repos\PlumEditor\PlumEditor;C:\imgui-master\imgui-1.89.5\backends;C:\imgui-master\imgui-1.89.5;C:\imgui-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BuildStlModules>false</BuildStlModules>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -111,7 +113,7 @@ xcopy "$(ProjectDir)\hello.as" "$(ProjectDir)App" /Y</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <DelayLoadDLLs>advapi32.dll;crypt32.dll;dwmapi.dll;gdi32.dll;imm32.dll;ole32.dll;oleaut32.dll;opengl32.dll;shell32.dll;shlwapi.dll;user32.dll;winmm.dll;ws2_32.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
-      <AdditionalLibraryDirectories>C:\imgui-master\imgui-1.89.5\backends;C:\imgui-master\imgui-1.89.5;C:\imgui-master</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\link\source\repos\PlumEditor\PlumEditor;C:\imgui-master\imgui-1.89.5\backends;C:\imgui-master\imgui-1.89.5;C:\imgui-master;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /I /D /Y "$(OutDir)$(TargetFileName)" "$(ProjectDir)App"
@@ -133,10 +135,7 @@ xcopy "$(ProjectDir)\hello.as" "$(ProjectDir)App" /Y</Command>
     <ClCompile Include="DearImGuiAddon.cpp" />
     <ClCompile Include="imgui_impl_s3d.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="App\engine\texture\box-shadow\128.png" />

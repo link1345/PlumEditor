@@ -1,31 +1,19 @@
 ﻿
 #define IMGUI_DEFINE_MATH_OPERATORS
 
-# include <Siv3D.hpp> // OpenSiv3D v0.6.9
-
+#include <Siv3D.hpp> // OpenSiv3D v0.6.9
 
 #include "DearImGuiAddon.hpp"
-
 #include "imgui_impl_s3d.h"
-
 #include <imgui.h>
-
-//#include <sol/sol.hpp>
 
 #include <iostream>
 
 #include "nodes.h"
 
+/*
 void Main()
 {
-
-	/* // OK!
-	sol::state lua;
-	int x = 0;
-	lua.set_function("beep", [&x] { ++x; });
-	lua.script("beep()");
-	Logger << U"Hello = " << x;
-	*/
 	// ------------------------------------------------------
 
 	Addon::Register<DearImGuiAddon>(U"ImGui");
@@ -75,6 +63,7 @@ void Main()
 		Logger << U"decl : " << Unicode::Widen(decl);
 	}
 
+
 	std::vector<AngelScript::asIScriptFunction*> remove_obj;
 	for (int i = 0; i < test_script.GetEngine()->GetObjectTypeCount(); i++) {
 		auto obj = test_script.GetEngine()->GetObjectTypeByIndex(i);
@@ -118,25 +107,9 @@ void Main()
 
 	//test_script.reload();
 
-	/*
-	if (test_script.compiled()) {
-		auto script_func = test_script.getFunction<void()>(U"Main");
-
-		String exception;
-
-		script_func.tryCall(exception);
-		if (exception)
-		{
-			Print << U"[script exception] " << exception;
-		}
-	}
-	else {
-		Logger << U"compiled Error!" << test_script.getMessages();
-	}*/
-
-
 	while (System::Update() && test_script.compiled())
 	{
+
 		if (SimpleGUI::Button(U"Push", Vec2{ 520, 370 }, 120, (checked == false)))
 		{
 
@@ -176,7 +149,7 @@ void Main()
 
 		ImVec2 texturePos;
 
-		if (ImGui::Begin("image", p_open)) {
+		if (ImGui::Begin("image")) {
 			texturePos = ImGui::GetCursorScreenPos();
 
 			ImGui::Text("pointe");
@@ -191,8 +164,8 @@ void Main()
 				ImGui::Image(reinterpret_cast<ImTextureID>(renderTexture.id().value()), ImVec2(renderTexture.width(), renderTexture.height()));
 			}
 
-			ImGui::End();
 		}
+		ImGui::End();
 
 
 		// レンダーテクスチャを白色でクリア
@@ -223,14 +196,19 @@ void Main()
 		//renderTexture.draw(0, 300);
 	}
 
-}
+}*/
 
-//
-// - Debug ビルド: プログラムの最適化を減らす代わりに、エラーやクラッシュ時に詳細な情報を得られます。
-//
-// - Release ビルド: 最大限の最適化でビルドします。
-//
-// - [デバッグ] メニュー → [デバッグの開始] でプログラムを実行すると、[出力] ウィンドウに詳細なログが表示され、エラーの原因を探せます。
-//
-// - Visual Studio を更新した直後は、プログラムのリビルド（[ビルド]メニュー → [ソリューションのリビルド]）が必要な場合があります。
-//
+void Main()
+{
+	// ------------------------------------------------------
+	Addon::Register<DearImGuiAddon>(U"ImGui");
+
+	// 背景の色を設定する | Set the background color
+	Scene::SetBackground(ColorF{ 0.6, 0.8, 0.7 });
+
+	while (System::Update())
+	{
+
+	}
+
+}

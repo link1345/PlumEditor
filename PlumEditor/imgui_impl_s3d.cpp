@@ -364,9 +364,18 @@ void ImGui_Impls3d_NewFrame()
 
 		io.AddMousePosEvent(mousePos.x, mousePos.y);
 		io.AddMouseWheelEvent(-wheel.x, -wheel.y);
+
+		//auto test = Mouse::GetAllInputs();
+
 		for (const Input& input : Mouse::GetAllInputs())
 		{
+			//Logger << U"deviceType : " << (int)input.deviceType();
+			//Logger << U"name : " << input.name();
+
+			if (input.name().contains(U"MouseX")) continue;
+
 			io.AddMouseButtonEvent(input.code(), input.pressed());
+
 		}
 
 		if (io.WantCaptureMouse)
