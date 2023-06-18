@@ -135,7 +135,9 @@ xcopy "$(ProjectDir)\hello.as" "$(ProjectDir)App" /Y</Command>
     <ClCompile Include="DearImGuiAddon.cpp" />
     <ClCompile Include="imgui_impl_s3d.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="main_menu.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="top.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="App\engine\texture\box-shadow\128.png" />
@@ -347,7 +349,9 @@ xcopy "$(ProjectDir)\hello.as" "$(ProjectDir)App" /Y</Command>
     <ClInclude Include="..\..\..\..\..\..\imgui-master\nodes.h" />
     <ClInclude Include="DearImGuiAddon.hpp" />
     <ClInclude Include="imgui_impl_s3d.h" />
+    <ClInclude Include="main_menu.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="top.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App\example\obj\blacksmith.obj">

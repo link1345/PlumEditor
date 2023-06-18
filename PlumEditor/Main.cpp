@@ -11,6 +11,9 @@
 
 #include "nodes.h"
 
+#include "top.h"
+
+
 /*
 void Main()
 {
@@ -206,9 +209,14 @@ void Main()
 	// 背景の色を設定する | Set the background color
 	Scene::SetBackground(ColorF{ 0.6, 0.8, 0.7 });
 
+
+	auto top = Plum::Top();
+
 	while (System::Update())
 	{
+		top.Main();
 
+		ImGui::ShowDemoWindow();
 	}
 
 }
