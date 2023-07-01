@@ -72,7 +72,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DisableSpecificWarnings>26451;26812;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <AdditionalIncludeDirectories>C:\Users\link\source\repos\PlumEditor\PlumEditor;C:\imgui-master\imgui-1.89.5\backends;C:\imgui-master\imgui-1.89.5;C:\imgui-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BuildStlModules>false</BuildStlModules>
@@ -102,7 +102,7 @@ xcopy "$(ProjectDir)\hello.as" "$(ProjectDir)App" /Y</Command>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DisableSpecificWarnings>26451;26812;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <AdditionalIncludeDirectories>C:\Users\link\source\repos\PlumEditor\PlumEditor;C:\imgui-master\imgui-1.89.5\backends;C:\imgui-master\imgui-1.89.5;C:\imgui-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BuildStlModules>false</BuildStlModules>
@@ -133,6 +133,7 @@ xcopy "$(ProjectDir)\hello.as" "$(ProjectDir)App" /Y</Command>
     <ClCompile Include="..\..\..\..\..\..\imgui-master\imgui-node-editor-master\imgui_canvas.cpp" />
     <ClCompile Include="..\..\..\..\..\..\imgui-master\nodes.cpp" />
     <ClCompile Include="DearImGuiAddon.cpp" />
+    <ClCompile Include="imgui_codeeditor.cpp" />
     <ClCompile Include="imgui_impl_s3d.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="main_menu.cpp" />
@@ -348,6 +349,7 @@ xcopy "$(ProjectDir)\hello.as" "$(ProjectDir)App" /Y</Command>
     <ClInclude Include="..\..\..\..\..\..\imgui-master\imgui-node-editor-master\imgui_extra_math.h" />
     <ClInclude Include="..\..\..\..\..\..\imgui-master\nodes.h" />
     <ClInclude Include="DearImGuiAddon.hpp" />
+    <ClInclude Include="imgui_codeeditor.h" />
     <ClInclude Include="imgui_impl_s3d.h" />
     <ClInclude Include="main_menu.h" />
     <ClInclude Include="stdafx.h" />

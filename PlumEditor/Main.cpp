@@ -1,13 +1,7 @@
-﻿
-#define IMGUI_DEFINE_MATH_OPERATORS
-
-#include <Siv3D.hpp> // OpenSiv3D v0.6.9
+﻿#include "stdafx.h"
 
 #include "DearImGuiAddon.hpp"
 #include "imgui_impl_s3d.h"
-#include <imgui.h>
-
-#include <iostream>
 
 #include "nodes.h"
 

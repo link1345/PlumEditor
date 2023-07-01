@@ -1,5 +1,5 @@
-﻿#include <Siv3D.hpp>
-#include <imgui.h>
+﻿#include "stdafx.h"
+
 #include "imgui_impl_s3d.h"
 #include "DearImGuiAddon.hpp"
 

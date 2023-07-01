@@ -195,6 +195,9 @@
     <ClCompile Include="top.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="imgui_codeeditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="App\icon.ico">
@@ -877,6 +880,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="top.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_codeeditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

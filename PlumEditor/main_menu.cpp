@@ -1,8 +1,7 @@
-﻿#include "main_menu.h"
+﻿#include "stdafx.h"
 
-#include <Siv3D.hpp>
-#include <imgui.h>
-
+#include "main_menu.h"
+#include "imgui_codeeditor.h"
 
 void Plum::MainMenu::Main(bool& isMainWindow) {
 	if (ImGui::BeginMainMenuBar())
@@ -70,7 +69,6 @@ void Plum::Plugin::MainWindow() {
 		}
 	}
 	ImGui::End();
-
 }
 
 /*
@@ -92,7 +90,7 @@ void Plum::Plugin::PluginWindow() {
 }
 */
 
-int Plum::PluginItem_file::FileLoad(int start, int end) {
+int Plum::PluginItem_file::FileLoad(int _start, int _end) {
 
 	this->code.clear();
 
@@ -103,10 +101,10 @@ int Plum::PluginItem_file::FileLoad(int start, int end) {
 		return -1;
 	}
 
-	if (start >= end) return -2;
+	if (_start >= _end) return -2;
 
-	this->start = start;
-	this->end = end;
+	this->start = _start;
+	this->end = _end;
 
 	int count = 0;
 
@@ -117,8 +115,8 @@ int Plum::PluginItem_file::FileLoad(int start, int end) {
 
 		count++;
 
-		if (start > count) continue;
-		else if (end < count) break;
+		if (_start > count) continue;
+		else if (_end < count) break;
 
 		this->code.push_back(tmp_code);
 
@@ -130,19 +128,26 @@ int Plum::PluginItem_file::FileLoad(int start, int end) {
 	}
 
 	ifs.close();
-
+	return 0;
 }
 
 void Plum::PluginItem_file::CodeWindow() {
 
 	std::string window_name = "Code : " + this->file_path.filename().string();
 
+	
 	if (ImGui::Begin(window_name.c_str())) {
+		/*
 		for (auto& code_line : this->code) {
-
 			ImGui::Text(code_line.c_str());
-
-		}
+			ImGui::SameLine();
+			ImGui::TextColored(ImVec4(1, 1, 0, 1),"testtest");			
+			//ImGui::Text(code_line.c_str());
+		}*/
+		ImGui::InputTextCodeEditor("##source", *this, 0, ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16) );
 	}
+	//ImGui::InputTextMultiline()
+	// -> InputTextEx Edit !
+
 	ImGui::End();
 }
