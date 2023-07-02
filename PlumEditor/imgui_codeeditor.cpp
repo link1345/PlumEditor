@@ -369,6 +369,25 @@ static void InputTextReconcileUndoStateAfterUserCallback(ImGuiInputTextState* st
 				p[i] = ImStb::STB_TEXTEDIT_GETCHAR(state, first_diff + i);
 }
 
+
+void TextConvert(Plum::PluginItem_file& buf_orig, char* buf) {
+	// 正常なら…ここで、データをlistに戻してあげる
+	buf_orig.code.clear();
+
+	std::string tmp_return_buf(buf);
+	std::string tmp_return_buf_line = "";
+	for (int i = 0; i < (int)tmp_return_buf.size(); ++i) {
+		if (tmp_return_buf[i] == '\n') {
+			buf_orig.code.push_back(tmp_return_buf_line);
+			tmp_return_buf_line = "";
+		}
+		else {
+			tmp_return_buf_line += tmp_return_buf[i];
+		}
+	}
+}
+
+
 bool ImGui::InputTextCodeEditor(const char* label, Plum::PluginItem_file& buf_orig, ImGuiInputTextFlags flags, const ImVec2& size_arg, ImGuiInputTextCallback callback, void* callback_user_data)
 {
 	flags |= ImGuiInputTextFlags_Multiline;
@@ -379,9 +398,17 @@ bool ImGui::InputTextCodeEditor(const char* label, Plum::PluginItem_file& buf_or
 	for ( auto code_line : buf_orig.code ) {
 		tmp_buf += code_line + "\n";
 	}
-	char* buf = new char[tmp_buf.size() + 1];
-	std::char_traits<char>::copy(buf, tmp_buf.c_str(), tmp_buf.size() + 1);
-	int buf_size = IM_ARRAYSIZE(buf);
+	char* buf = new char[tmp_buf.size() + 1 + 1];
+	std::char_traits<char>::copy(buf, tmp_buf.c_str(), tmp_buf.size() + 1 + 1);
+
+	// ここにbuf_sizeを始めて入れてあげると、statsの方が初期化されて、それ以降、そのサイズが最大値になってしまう
+	// なので、どうにかして、可変にする！
+	// --> [2023/07/02] なんか573行目辺りの処理足したら動いた
+	int buf_size = tmp_buf.size() + 1 + 1;
+
+	//char* buf = buf_orig.code;
+	//int buf_size = IM_ARRAYSIZE(buf);
+
 
 	ImGuiWindow* window = GetCurrentWindow();
 	if (window->SkipItems)
@@ -425,6 +452,8 @@ bool ImGui::InputTextCodeEditor(const char* label, Plum::PluginItem_file& buf_or
 		if (!ItemAdd(total_bb, id, &frame_bb, ImGuiItemFlags_Inputable))
 		{
 			EndGroup();
+
+			//TextConvert(buf_orig, buf);
 			delete[] buf;
 			return false;
 		}
@@ -445,6 +474,8 @@ bool ImGui::InputTextCodeEditor(const char* label, Plum::PluginItem_file& buf_or
 		{
 			EndChild();
 			EndGroup();
+
+			//TextConvert(buf_orig, buf);
 			delete[] buf;
 			return false;
 		}
@@ -483,7 +514,7 @@ bool ImGui::InputTextCodeEditor(const char* label, Plum::PluginItem_file& buf_or
 	const bool init_changed_specs = (state != NULL && state->Stb.single_line != !is_multiline); // state != NULL means its our state.
 	const bool init_make_active = (user_clicked || user_scroll_finish || input_requested_by_nav || input_requested_by_tabbing);
 	const bool init_state = (init_make_active || user_scroll_active);
-	if ((init_state && g.ActiveId != id) || init_changed_specs)
+	if ((init_state && g.ActiveId != id) || init_changed_specs )
 	{
 		// Access state even if we don't own it yet.
 		state = &g.InputTextState;
@@ -537,6 +568,12 @@ bool ImGui::InputTextCodeEditor(const char* label, Plum::PluginItem_file& buf_or
 
 		if (flags & ImGuiInputTextFlags_AlwaysOverwrite)
 			state->Stb.insert_mode = 1; // stb field name is indeed incorrect (see #2863)
+	}
+	else {
+		// 文字数が変化したら、長さも変えておく
+		if (state != NULL && state->TextW.Size != buf_size + 1) {
+			state->TextW.resize(buf_size + 1);          // wchar count <= UTF-8 count. we use +1 to make sure that .Data is always pointing to at least an empty string.
+		}
 	}
 
 	const bool is_osx = io.ConfigMacOSXBehaviors;
@@ -1315,22 +1352,16 @@ bool ImGui::InputTextCodeEditor(const char* label, Plum::PluginItem_file& buf_or
 	if (value_changed && !(flags & ImGuiInputTextFlags_NoMarkEdited))
 		MarkItemEdited(id);
 
-	/*
+	
 	// 正常なら…ここで、データをlistに戻してあげる
 	buf_orig.code.clear();
-	
+
+
 	std::string tmp_return_buf(buf);
-	std::string tmp_return_buf_line = "";
-	for (int i = 0; i < (int)tmp_return_buf.size(); ++i ) {
-		if (tmp_return_buf[i] == '\n') {
-			buf_orig.code.push_back(tmp_return_buf_line);
-			tmp_return_buf_line = "";
-		}
-		else {
-			tmp_return_buf_line += tmp_return_buf[i];
-		}
+	if ( !tmp_buf.compare(tmp_return_buf) ) {
+		TextConvert(buf_orig, buf);
 	}
-	*/
+
 	delete[] buf;
 	
 	IMGUI_TEST_ENGINE_ITEM_INFO(id, label, g.LastItemData.StatusFlags | ImGuiItemStatusFlags_Inputable);
@@ -1339,6 +1370,8 @@ bool ImGui::InputTextCodeEditor(const char* label, Plum::PluginItem_file& buf_or
 	else
 		return value_changed;
 }
+
+
 
 static bool STB_TEXTEDIT_INSERTCHARS(ImGuiInputTextState* obj, int pos, const ImWchar* new_text, int new_text_len)
 {

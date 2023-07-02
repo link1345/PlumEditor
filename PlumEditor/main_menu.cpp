@@ -71,28 +71,9 @@ void Plum::Plugin::MainWindow() {
 	ImGui::End();
 }
 
-/*
-void Plum::Plugin::PluginWindow() {
-	for (auto& item : this->plugin_list) {
-
-		for (auto& item_file : item.plugin_file) {
-
-			if (ImGui::Begin( item_file.file_path.filename().string().c_str() )) {
-
-				
-
-			}
-			ImGui::End();
-
-		}
-
-	}
-}
-*/
-
 int Plum::PluginItem_file::FileLoad(int _start, int _end) {
 
-	this->code.clear();
+	//this->code.clear();
 
 	std::ifstream ifs(this->file_path);
 
@@ -100,16 +81,13 @@ int Plum::PluginItem_file::FileLoad(int _start, int _end) {
 		//std::cerr << "Failed to open file." << std::endl;
 		return -1;
 	}
-
+	
 	if (_start >= _end) return -2;
 
 	this->start = _start;
 	this->end = _end;
-
 	int count = 0;
-
 	string tmp_code = "";
-
 	while (getline(ifs, tmp_code)) {
 		//std::cout << "#" << code << std::endl;
 
@@ -119,6 +97,7 @@ int Plum::PluginItem_file::FileLoad(int _start, int _end) {
 		else if (_end < count) break;
 
 		this->code.push_back(tmp_code);
+		//this->code = tmp_code.c_str();
 
 		if (ifs.eof()) {
 			this->end = count;
@@ -127,6 +106,27 @@ int Plum::PluginItem_file::FileLoad(int _start, int _end) {
 
 	}
 
+	/*
+	std::vector<char> bytes;
+	char byte = 0;
+	while (ifs.get(byte)){
+		bytes.push_back(byte);
+	}
+
+	delete[] this->code;
+	this->isLoad = false;
+
+	auto test_num = bytes.size()+1;
+	this->code = new char[bytes.size()+1];
+	for (int i = 0; i < bytes.size()+1; i++) {
+		if (i == bytes.size()) {
+			this->code[i] = '\0';
+		}
+		else
+			this->code[i]  = bytes.at(i);
+	}
+	this->isLoad = true;
+	*/
 	ifs.close();
 	return 0;
 }
@@ -144,6 +144,7 @@ void Plum::PluginItem_file::CodeWindow() {
 			ImGui::TextColored(ImVec4(1, 1, 0, 1),"testtest");			
 			//ImGui::Text(code_line.c_str());
 		}*/
+		//ImGui::Text(this->code);
 		ImGui::InputTextCodeEditor("##source", *this, 0, ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16) );
 	}
 	//ImGui::InputTextMultiline()

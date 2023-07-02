@@ -25,8 +25,22 @@ namespace Plum {
 			this->isWindowOpen = false;
 
 			this->code = std::list<string>();
+			//this->code = "";
 
+			//this->code = new char[2];
+			//this->code[0] = 'a';
+			//this->code[1] = '\0';
+			this->isLoad = true;
 		}
+
+		~PluginItem_file() {
+			if (this->isLoad == true) {
+				//delete[] this->code;
+				this->isLoad = false;
+			}
+		}
+
+		bool isLoad = false;
 
 		int FileLoad(int start , int end);
 
@@ -37,7 +51,9 @@ namespace Plum {
 		bool isWindowOpen;
 
 		std::list<string> code;
+		//char* code;
 
+		
 		int hasStart() {
 			return this->start;
 		}
@@ -57,6 +73,9 @@ namespace Plum {
 	public :
 		PluginItem() {
 			plugin_file = std::list<PluginItem_file>();
+		}
+		~PluginItem() {
+			plugin_file.clear();
 		}
 
 		/// @brief プラグインのフォルダ
@@ -78,6 +97,12 @@ namespace Plum {
 			this->init_plugin();
 		}
 
+		~Plugin() {
+			//for (auto item : this->plugin_list) {
+			//	delete[]
+			//}
+		}
+
 		/// @brief プラグインの一覧初期化
 		void init_plugin() {
 			plugin_list.clear();
@@ -86,7 +111,7 @@ namespace Plum {
 
 				if (!pl_file.is_directory()) continue;
 
-				PluginItem item = PluginItem();
+				PluginItem item =  PluginItem();
 				item.folder_path = pl_file.path();
 
 				for (const auto& file : directory_iterator(item.folder_path)) {
