@@ -1391,12 +1391,11 @@ bool ImGui::InputTextCodeEditor(const char* label, Plum::PluginItem_file& buf_or
 			ImU32 col = GetColorU32(is_displaying_hint ? ImGuiCol_TextDisabled : ImGuiCol_Text);
 			draw_window->DrawList->AddText(g.Font, g.FontSize, draw_pos, col, buf_display, buf_display_end, 0.0f, is_multiline ? NULL : &clip_rect);
 
-
 			// -------------------------------------
+			auto tmp_text_size = CalcTextSize(buf_display, buf_display_end);
 			//CodeEditorSameLine(draw_window);
-			//draw_pos = draw_pos + ImVec2(0,clip_rect.y);
-
-			//draw_window->DrawList->AddText(g.Font, g.FontSize, draw_pos, col, buf_display, buf_display_end, 0.0f, is_multiline ? NULL : &clip_rect);
+			draw_pos += tmp_text_size;
+			draw_window->DrawList->AddText(g.Font, g.FontSize, draw_pos, col, buf_display, buf_display_end, 0.0f, is_multiline ? NULL : &clip_rect);
 		}
 	}
 
