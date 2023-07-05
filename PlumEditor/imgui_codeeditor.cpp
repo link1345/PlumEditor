@@ -387,6 +387,31 @@ void TextConvert(Plum::PluginItem_file& buf_orig, char* buf) {
 	}
 }
 
+void CodeEditorSameLine(ImGuiWindow* window, float offset_from_start_x = (0.0F), float spacing_w = (-1.0F))
+{
+	ImGuiContext& g = *GImGui;
+	//ImGuiWindow* window = g.CurrentWindow;
+	if (window->SkipItems)
+		return;
+
+	if (offset_from_start_x != 0.0f)
+	{
+		if (spacing_w < 0.0f)
+			spacing_w = 0.0f;
+		window->DC.CursorPos.x = window->Pos.x - window->Scroll.x + offset_from_start_x + spacing_w + window->DC.GroupOffset.x + window->DC.ColumnsOffset.x;
+		window->DC.CursorPos.y = window->DC.CursorPosPrevLine.y;
+	}
+	else
+	{
+		if (spacing_w < 0.0f)
+			spacing_w = g.Style.ItemSpacing.x;
+		window->DC.CursorPos.x = window->DC.CursorPosPrevLine.x + spacing_w;
+		window->DC.CursorPos.y = window->DC.CursorPosPrevLine.y;
+	}
+	window->DC.CurrLineSize = window->DC.PrevLineSize;
+	window->DC.CurrLineTextBaseOffset = window->DC.PrevLineTextBaseOffset;
+	window->DC.IsSameLine = true;
+}
 
 bool ImGui::InputTextCodeEditor(const char* label, Plum::PluginItem_file& buf_orig, ImGuiInputTextFlags flags, const ImVec2& size_arg, ImGuiInputTextCallback callback, void* callback_user_data)
 {
@@ -395,15 +420,17 @@ bool ImGui::InputTextCodeEditor(const char* label, Plum::PluginItem_file& buf_or
 	const char* hint = NULL;
 
 	std::string tmp_buf = "";
-	for ( auto code_line : buf_orig.code ) {
+	for ( auto code_line : buf_orig.code) {
 		tmp_buf += code_line + "\n";
 	}
+	//char* buf = new char[1000];
 	char* buf = new char[tmp_buf.size() + 1 + 1];
 	std::char_traits<char>::copy(buf, tmp_buf.c_str(), tmp_buf.size() + 1 + 1);
 
 	// ここにbuf_sizeを始めて入れてあげると、statsの方が初期化されて、それ以降、そのサイズが最大値になってしまう
 	// なので、どうにかして、可変にする！
 	// --> [2023/07/02] なんか573行目辺りの処理足したら動いた
+	//int buf_size = 1000;
 	int buf_size = tmp_buf.size() + 1 + 1;
 
 	//char* buf = buf_orig.code;
@@ -569,11 +596,61 @@ bool ImGui::InputTextCodeEditor(const char* label, Plum::PluginItem_file& buf_or
 		if (flags & ImGuiInputTextFlags_AlwaysOverwrite)
 			state->Stb.insert_mode = 1; // stb field name is indeed incorrect (see #2863)
 	}
-	else {
-		// 文字数が変化したら、長さも変えておく
-		if (state != NULL && state->TextW.Size != buf_size + 1) {
-			state->TextW.resize(buf_size + 1);          // wchar count <= UTF-8 count. we use +1 to make sure that .Data is always pointing to at least an empty string.
+	// ------------------------------------
+	// ------   追記した部分   ------------
+	else if (state != NULL && state->TextW.Size != buf_size + 1) {
+		// Access state even if we don't own it yet.
+		//state = &g.InputTextState;
+		//state->CursorAnimReset();
+
+		// Backup state of deactivating item so they'll have a chance to do a write to output buffer on the same frame they report IsItemDeactivatedAfterEdit (#4714)
+		//InputTextDeactivateHook(state->ID);
+
+		// Take a copy of the initial buffer value (both in original UTF-8 format and converted to wchar)
+		// From the moment we focused we are ignoring the content of 'buf' (unless we are in read-only mode)
+		const int buf_len = (int)strlen(buf);
+		state->InitialTextA.resize(buf_len + 1);    // UTF-8. we use +1 to make sure that .Data is always pointing to at least an empty string.
+		memcpy(state->InitialTextA.Data, buf, buf_len + 1);
+
+		// Preserve cursor position and undo/redo stack if we come back to same widget
+		// FIXME: Since we reworked this on 2022/06, may want to differenciate recycle_cursor vs recycle_undostate?
+		bool recycle_state = (state->ID == id && !init_changed_specs);
+		if (recycle_state && (state->CurLenA != buf_len || (state->TextAIsValid && strncmp(state->TextA.Data, buf, buf_len) != 0)))
+			recycle_state = false;
+
+		// Start edition
+		const char* buf_end = NULL;
+		//state->ID = id;
+		state->TextW.resize(buf_size + 1);          // wchar count <= UTF-8 count. we use +1 to make sure that .Data is always pointing to at least an empty string.
+		state->TextA.resize(0);
+		state->TextAIsValid = false;                // TextA is not valid yet (we will display buf until then)
+		state->CurLenW = ImTextStrFromUtf8(state->TextW.Data, buf_size, buf, NULL, &buf_end);
+		state->CurLenA = (int)(buf_end - buf);      // We can't get the result from ImStrncpy() above because it is not UTF-8 aware. Here we'll cut off malformed UTF-8.
+
+		if (recycle_state)
+		{
+			// Recycle existing cursor/selection/undo stack but clamp position
+			// Note a single mouse click will override the cursor/position immediately by calling stb_textedit_click handler.
+			state->CursorClamp();
 		}
+		else
+		{
+			state->ScrollX = 0.0f;
+			stb_textedit_initialize_state(&state->Stb, !is_multiline);
+		}
+
+		if (!is_multiline)
+		{
+			if (flags & ImGuiInputTextFlags_AutoSelectAll)
+				select_all = true;
+			if (input_requested_by_nav && (!recycle_state || !(g.NavActivateFlags & ImGuiActivateFlags_TryToPreserveState)))
+				select_all = true;
+			if (input_requested_by_tabbing || (user_clicked && io.KeyCtrl))
+				select_all = true;
+		}
+
+		if (flags & ImGuiInputTextFlags_AlwaysOverwrite)
+			state->Stb.insert_mode = 1; // stb field name is indeed incorrect (see #2863)
 	}
 
 	const bool is_osx = io.ConfigMacOSXBehaviors;
@@ -1276,6 +1353,7 @@ bool ImGui::InputTextCodeEditor(const char* label, Plum::PluginItem_file& buf_or
 		{
 			ImU32 col = GetColorU32(is_displaying_hint ? ImGuiCol_TextDisabled : ImGuiCol_Text);
 			draw_window->DrawList->AddText(g.Font, g.FontSize, draw_pos - draw_scroll, col, buf_display, buf_display_end, 0.0f, is_multiline ? NULL : &clip_rect);
+
 		}
 
 		// Draw blinking cursor
@@ -1312,6 +1390,13 @@ bool ImGui::InputTextCodeEditor(const char* label, Plum::PluginItem_file& buf_or
 		{
 			ImU32 col = GetColorU32(is_displaying_hint ? ImGuiCol_TextDisabled : ImGuiCol_Text);
 			draw_window->DrawList->AddText(g.Font, g.FontSize, draw_pos, col, buf_display, buf_display_end, 0.0f, is_multiline ? NULL : &clip_rect);
+
+
+			// -------------------------------------
+			//CodeEditorSameLine(draw_window);
+			//draw_pos = draw_pos + ImVec2(0,clip_rect.y);
+
+			//draw_window->DrawList->AddText(g.Font, g.FontSize, draw_pos, col, buf_display, buf_display_end, 0.0f, is_multiline ? NULL : &clip_rect);
 		}
 	}
 
@@ -1353,12 +1438,11 @@ bool ImGui::InputTextCodeEditor(const char* label, Plum::PluginItem_file& buf_or
 		MarkItemEdited(id);
 
 	
-	// 正常なら…ここで、データをlistに戻してあげる
-	buf_orig.code.clear();
-
-
 	std::string tmp_return_buf(buf);
-	if ( !tmp_buf.compare(tmp_return_buf) ) {
+	if ( tmp_buf.compare(tmp_return_buf) ) {
+		// 正常なら…ここで、データをlistに戻してあげる
+		buf_orig.code.clear();
+
 		TextConvert(buf_orig, buf);
 	}
 
