@@ -53,6 +53,7 @@ void Plum::Plugin::MainWindow() {
 
 					// 「今、開いた」場合、ロード処理を掛ける
 					if (item_file.isWindowOpen && item_file.isWindowOpen != item_Click) {
+			
 						item_file.FileLoad(0,100);
 					}
 
@@ -73,8 +74,6 @@ void Plum::Plugin::MainWindow() {
 
 int Plum::PluginItem_file::FileLoad(int _start, int _end) {
 
-	//this->code.clear();
-
 	std::ifstream ifs(this->file_path);
 
 	if (ifs.fail()) {
@@ -84,10 +83,15 @@ int Plum::PluginItem_file::FileLoad(int _start, int _end) {
 	
 	if (_start >= _end) return -2;
 
+	this->code.clear();
+
 	this->start = _start;
 	this->end = _end;
 	int count = 0;
 	string tmp_code = "";
+
+	this->isLoad = false;
+
 	while (getline(ifs, tmp_code)) {
 		//std::cout << "#" << code << std::endl;
 
@@ -105,28 +109,8 @@ int Plum::PluginItem_file::FileLoad(int _start, int _end) {
 		}
 
 	}
-
-	/*
-	std::vector<char> bytes;
-	char byte = 0;
-	while (ifs.get(byte)){
-		bytes.push_back(byte);
-	}
-
-	delete[] this->code;
-	this->isLoad = false;
-
-	auto test_num = bytes.size()+1;
-	this->code = new char[bytes.size()+1];
-	for (int i = 0; i < bytes.size()+1; i++) {
-		if (i == bytes.size()) {
-			this->code[i] = '\0';
-		}
-		else
-			this->code[i]  = bytes.at(i);
-	}
 	this->isLoad = true;
-	*/
+
 	ifs.close();
 	return 0;
 }
@@ -134,20 +118,21 @@ int Plum::PluginItem_file::FileLoad(int _start, int _end) {
 void Plum::PluginItem_file::CodeWindow() {
 
 	std::string window_name = "Code : " + this->file_path.filename().string();
-
-	
+		
 	if (ImGui::Begin(window_name.c_str())) {
-		/*
+
+		int line_count = 0;
 		for (auto& code_line : this->code) {
-			ImGui::Text(code_line.c_str());
+			line_count++;
+
+			string line_text = std::to_string(line_count);
+			line_text = std::string(std::max(0, 6 - (int)line_text.size()), ' ') + line_text;
+
+			ImGui::TextColored(ImVec4(1, 1, 0, 1), line_text.c_str());
 			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(1, 1, 0, 1),"testtest");			
-			//ImGui::Text(code_line.c_str());
-		}*/
-		//ImGui::Text(this->code);
-		ImGui::InputTextCodeEditor("##source", *this, 0, ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16) );
+			ImGui::Text(code_line.c_str());
+		}
+
 	}
-	//ImGui::InputTextMultiline()
-	// -> InputTextEx Edit !
 	ImGui::End();
 }

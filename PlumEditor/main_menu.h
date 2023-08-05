@@ -51,8 +51,7 @@ namespace Plum {
 		bool isWindowOpen;
 
 		std::list<string> code;
-		//char* code;
-
+		//char code[] = "test";
 		
 		int hasStart() {
 			return this->start;
